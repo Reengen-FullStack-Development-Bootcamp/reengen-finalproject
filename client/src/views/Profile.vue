@@ -1,0 +1,197 @@
+<template>
+  <section class="login">
+    <div class="form">
+      <!--login form start-->
+      <form class="login-form">
+        <i class="fas fa-user-circle"></i>
+        <input
+          class="user-input"
+          type="text"
+          name=""
+          placeholder="Name"
+          required
+          v-model="Name"
+        />
+        <input
+          class="user-input"
+          type="password"
+          placeholder="Email"
+          required
+          v-model="email"
+        />
+        <div class="options-01"></div>
+        <input class="btn" @click="login({ name, email })" />
+      </form>
+      <!--login form end-->
+      <!--signup form start-->
+      <form class="signup-form" action="" method="post">
+        <i class="fas fa-user-plus"></i>
+        <input
+          class="user-input"
+          type="text"
+          name=""
+          placeholder="Name"
+          required
+        />
+        <input
+          class="user-input"
+          type="email"
+          name=""
+          placeholder="Email Address"
+          required
+        />
+        <input class="btn" type="submit" name="" value="SIGN UP" />
+        <div class="options-02"></div>
+      </form>
+      <!--signup form end-->
+
+      <br />
+      <br />
+    </div>
+  </section>
+
+  <!--form area end-->
+</template>
+
+<script>
+export default {};
+</script>
+
+<style>
+.login {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0);
+  overflow: none;
+}
+
+.form {
+  z-index: 1;
+  position: absolute;
+  width: 320px;
+  text-align: center;
+}
+
+.form i {
+  z-index: 1;
+  color: #ccc;
+  font-size: 65px;
+  margin-bottom: 30px;
+}
+
+.form .signup-form {
+  display: none;
+}
+
+.form .user-input {
+  width: 320px;
+  height: 55px;
+  margin-bottom: 30px;
+  outline: none;
+  border: none;
+  background: black;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  border-radius: 5px;
+  transition: 0.5s;
+  transition-property: border-left, border-right, box-shadow;
+}
+
+.form .user-input:hover,
+.form .user-input:focus,
+.form .user-input:active {
+  border-left: solid 8px #4285f4;
+  border-right: solid 8px #4285f4;
+  box-shadow: 0 0 100px rgba(66, 133, 244, 0.8);
+}
+
+.form .options-01 {
+  margin-bottom: 50px;
+}
+
+.form .options-01 input {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+.form .options-01 .remember-me {
+  color: #bbb;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  float: left;
+  cursor: pointer;
+}
+
+.form .options-01 a {
+  color: #888;
+  font-size: 14px;
+  font-style: italic;
+  float: right;
+}
+
+.form .btn {
+  outline: none;
+  border: none;
+  width: 320px;
+  height: 55px;
+  background: #4285f4;
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.5s;
+  transition-property: border-left, border-right, box-shadow;
+}
+
+.form .btn:hover {
+  border-left: solid 8px rgba(255, 255, 255, 0.5);
+  border-right: solid 8px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 100px rgba(66, 133, 244, 0.8);
+}
+
+.form .options-02 {
+  color: #bbb;
+  font-size: 14px;
+  margin-top: 30px;
+}
+
+.form .options-02 a {
+  color: #4285f4;
+}
+.b-btn {
+  color: white;
+}
+.b-btn.patreon i {
+  color: orange;
+}
+.b-btn:hover {
+  text-decoration: underline;
+}
+.b-btn i {
+  font-size: 20px;
+  color: yellow;
+  margin-top: 2rem;
+}
+/* Responsive CSS */
+
+@media screen and (max-width: 500px) {
+  .form {
+    width: 95%;
+  }
+
+  .form .user-input {
+    width: 100%;
+  }
+
+  .form .btn {
+    width: 100%;
+  }
+}
+</style>

@@ -1,0 +1,14 @@
+{
+  "info": {
+    "name": "English",
+    "code": "en"
+  },
+  "title": "Login Successfully! Welcome to ",
+  "update": "Update Data",
+  "registired": "Not Registired?",
+  "account": "Create an Account",
+  "remember": "Remember Me",
+  "already": "Already have an account?",
+  "signin": "Sign In",
+  "dashboard": "Dashboard"
+}

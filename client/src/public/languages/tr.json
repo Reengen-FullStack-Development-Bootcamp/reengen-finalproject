@@ -1,0 +1,14 @@
+{
+  "info": {
+    "name": "Türkçe",
+    "code": "tr"
+  },
+  "title": "Giris Basarili! Hosgeldin",
+  "update": "Veriyi Güncelle",
+  "registired": "Uyeliginiz yok mu?",
+  "account": "Bir hesap olusurun",
+  "remember": "Beni hatirla",
+  "already": "Zaten bir hesabiniz var mı?",
+  "signin": "Giris yap",
+  "dashboard": "Gösterge Paneli"
+}
