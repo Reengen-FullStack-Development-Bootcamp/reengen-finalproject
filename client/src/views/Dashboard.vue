@@ -55,7 +55,8 @@
                   dark
                   v-bind="attrs"
                   v-on="on"
-                  @click="submitType = 'ADD'"
+                  @click="submitType = 'listAdd'"
+                  value="ADD"
                 >
                   {{ $t(submitType) }}
                 </v-btn>
@@ -127,6 +128,7 @@
       <v-col>
         <v-card>
           <v-data-table
+            @click:row="openPopupWidthByIdName"
             caption="Factories Name"
             :headers="headers.a2"
             :items="desserts.a2"
@@ -135,80 +137,72 @@
           >
           </v-data-table>
           <v-row justify="center">
-            <v-dialog v-model="dialog" persistent max-width="600px">
+            <v-dialog v-model="factoriesNamePopup" persistent max-width="600px">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                  {{ $t("update") }}
+                <v-btn
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="submitType = 'nameAdd'"
+                  value="ADD"
+                >
+                  {{ $t(submitType) }}
                 </v-btn>
               </template>
               <v-card>
                 <v-card-text>
                   <v-container>
-                    <!--  <v-row>
+                    <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Legal first name*"
-                          required
-                        ></v-text-field>
+                        <v-text-field label="Used Unit" required></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          label="Legal middle name"
+                          label="Date Range"
                           hint="example of helper text only on focus"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          label="Legal last name*"
+                          label="Use of Kw"
                           hint="example of persistent helper text"
                           persistent-hint
                           required
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="Email*" required></v-text-field>
-                      </v-col>
+
                       <v-col cols="12">
                         <v-text-field
-                          label="Password*"
-                          type="password"
+                          label="Usage Fee*"
+                          type="text"
                           required
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
-                        <v-select
-                          :items="['0-17', '18-29', '30-54', '54+']"
-                          label="Age*"
+                        <v-text-field
+                          label="Discounted Price"
                           required
-                        ></v-select>
+                        ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-autocomplete
-                          :items="[
-                            'Skiing',
-                            'Ice hockey',
-                            'Soccer',
-                            'Basketball',
-                            'Hockey',
-                            'Reading',
-                            'Writing',
-                            'Coding',
-                            'Basejump',
-                          ]"
-                          label="Interests"
-                          multiple
-                        ></v-autocomplete>
-                      </v-col>
-                    </v-row>-->
+                    </v-row>
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="dialog = false">
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="dialog = factoriesNamePopup = false"
+                  >
                     Close
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="dialog = false">
-                    Save
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="dialog = factoriesNameAdd"
+                  >
+                    {{ $t(submitType) }}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -273,6 +267,13 @@ export default {
       numberOfEmployees: null,
       specialMember: null,
 
+      factoryNameId: 0,
+      usedUnit: null,
+      dateRange: null,
+      useOfKw: null,
+      usageFee: null,
+      discountedPrice: null,
+
       desserts: { a1: [], a2: [] },
     };
   },
@@ -293,10 +294,20 @@ export default {
       this.submitType = "UPDATE";
       this.factoriesListPopup = true;
     },
+    openPopupWidthByIdName(item) {
+      this.usedUnit = item.usedUnit;
+      this.dateRange = item.dateRange;
+      this.useOfKw = item.useOfKw;
+      this.usageFee = item.usageFee;
+      this.discountedPrice = item.discountedPrice;
+      this.factoryNameId = item.id;
+      this.submitType = "UPDATE";
+      this.factoriesNamePopup = true;
+    },
 
     async factoriesListAdd() {
       switch (this.submitType) {
-        case "ADD":
+        case "listAdd":
           await axios.post("/factoriesList", {
             factoryName: this.factoryName,
             membershipDate: this.membershipDate,
@@ -340,6 +351,60 @@ export default {
 
           this.desserts.a1 = (
             await axios.get("http://localhost:3000/factoriesList")
+          ).data;
+
+          break;
+
+        default:
+          break;
+      }
+    },
+    async factoriesNameAdd() {
+      switch (this.submitType) {
+        case "nameAdd":
+          await axios.post("/factoriesName", {
+            usedUnit: this.usedUnit,
+            dateRange: this.dateRange,
+            useOfKw: this.useOfKw,
+            usageFee: this.usageFee,
+            discountedPrice: this.discountedPrice,
+          });
+
+          this.usedUnit = "";
+
+          this.dateRange = "";
+          this.useOfKw = "";
+          this.usageFee = "";
+          this.discountedPrice = "";
+
+          this.factoriesNamePopup = false;
+
+          this.desserts.a2 = (
+            await axios.get("http://localhost:3000/factoriesName")
+          ).data;
+
+          break;
+
+        case "UPDATE":
+          await axios.patch(`/factoriesName/${this.factoryNameId}`, {
+            usedUnit: this.usedUnit,
+            dateRange: this.dateRange,
+            useOfKw: this.useOfKw,
+            usageFee: this.usageFee,
+            discountedPrice: this.discountedPrice,
+          });
+
+          this.usedUnit = "";
+
+          this.dateRange = "";
+          this.useOfKw = "";
+          this.usageFee = "";
+          this.discountedPrice = "";
+
+          this.factoriesNamePopup = false;
+
+          this.desserts.a2 = (
+            await axios.get("http://localhost:3000/factoriesName")
           ).data;
 
           break;
