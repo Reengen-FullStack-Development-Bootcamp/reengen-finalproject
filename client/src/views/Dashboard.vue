@@ -5,13 +5,13 @@
     </v-subheader>
     <br />
     <v-row>
-      <v-col lg="7" cols="12">
+      <v-col lg="12" cols="12">
         <v-alert dense text type="success">
           {{ $t("title") }} <strong>{{ user.name }}</strong>
         </v-alert>
         <v-row>
           <v-col
-            lg="6"
+            lg="12"
             cols="12"
             v-for="(item, index) in activityLog"
             :key="index"
@@ -36,10 +36,10 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="12" lg="5"> </v-col>
       <v-col>
         <v-card>
           <v-data-table
+            @click:row="openPopupWidthById"
             caption="Factories List"
             :headers="headers.a1"
             :items="desserts.a1"
@@ -48,10 +48,16 @@
           >
           </v-data-table>
           <v-row justify="center">
-            <v-dialog v-model="dialog" persistent max-width="600px">
+            <v-dialog v-model="factoriesListPopup" persistent max-width="600px">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                  {{ $t("update") }}
+                <v-btn
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="submitType = 'ADD'"
+                >
+                  {{ $t(submitType) }}
                 </v-btn>
               </template>
               <v-card>
@@ -60,51 +66,57 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          label="Legal first name*"
+                          label="Factory Name"
                           required
+                          v-model="factoryName"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          label="Legal middle name"
+                          label="Membership Date"
                           hint="example of helper text only on focus"
+                          v-model="membershipDate"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          label="Legal last name*"
+                          label="Membership Expiration Date"
                           hint="example of persistent helper text"
                           persistent-hint
                           required
+                          v-model="membershipExpirationDate"
                         ></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="Email*" required></v-text-field>
                       </v-col>
                       <v-col cols="12">
                         <v-text-field
-                          label="Password*"
-                          type="password"
+                          label="Number Of Employees"
+                          type="example of persistent helper text"
                           required
+                          v-model="numberOfEmployees"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
-                        <v-select
-                          :items="['0-17', '18-29', '30-54', '54+']"
-                          label="Age*"
+                        <v-text-field
+                          label="Special Member"
+                          type="example of persistent helper text"
                           required
-                        ></v-select>
+                          v-model="specialMember"
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="dialog = false">
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="factoriesListPopup = false"
+                  >
                     Close
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="dialog = false">
-                    Save
+                  <v-btn color="blue darken-1" text @click="factoriesListAdd">
+                    {{ $t(submitType) }}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -132,7 +144,7 @@
               <v-card>
                 <v-card-text>
                   <v-container>
-                    <v-row>
+                    <!--  <v-row>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Legal first name*"
@@ -187,7 +199,7 @@
                           multiple
                         ></v-autocomplete>
                       </v-col>
-                    </v-row>
+                    </v-row>-->
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
@@ -250,6 +262,17 @@ export default {
         ],
       },
 
+      factoriesListPopup: false,
+      factoriesNamePopup: false,
+
+      submitType: "ADD",
+      factoryListId: 0,
+      factoryName: null,
+      membershipDate: null,
+      membershipExpirationDate: null,
+      numberOfEmployees: null,
+      specialMember: null,
+
       desserts: { a1: [], a2: [] },
     };
   },
@@ -259,6 +282,71 @@ export default {
   methods: {
     onButtonClick(item) {
       console.log("click on " + item.no);
+    },
+    openPopupWidthById(item) {
+      this.factoryName = item.factoryName;
+      this.membershipDate = item.membershipDate;
+      this.membershipExpirationDate = item.membershipExpirationDate;
+      this.numberOfEmployees = item.numberOfEmployees;
+      this.specialMember = item.specialMember;
+      this.factoryListId = item.id;
+      this.submitType = "UPDATE";
+      this.factoriesListPopup = true;
+    },
+
+    async factoriesListAdd() {
+      switch (this.submitType) {
+        case "ADD":
+          await axios.post("/factoriesList", {
+            factoryName: this.factoryName,
+            membershipDate: this.membershipDate,
+            membershipExpirationDate: this.membershipExpirationDate,
+            numberOfEmployees: this.numberOfEmployees,
+            specialMember: this.specialMember,
+          });
+
+          this.factoryName = "";
+
+          this.membershipDate = "";
+          this.membershipExpirationDate = "";
+          this.numberOfEmployees = "";
+          this.specialMember = "";
+
+          this.factoriesListPopup = false;
+
+          this.desserts.a1 = (
+            await axios.get("http://localhost:3000/factoriesList")
+          ).data;
+
+          break;
+
+        case "UPDATE":
+          await axios.patch(`/factoriesList/${this.factoryListId}`, {
+            factoryName: this.factoryName,
+            membershipDate: this.membershipDate,
+            membershipExpirationDate: this.membershipExpirationDate,
+            numberOfEmployees: this.numberOfEmployees,
+            specialMember: this.specialMember,
+          });
+
+          this.factoryName = "";
+
+          this.membershipDate = "";
+          this.membershipExpirationDate = "";
+          this.numberOfEmployees = "";
+          this.specialMember = "";
+
+          this.factoriesListPopup = false;
+
+          this.desserts.a1 = (
+            await axios.get("http://localhost:3000/factoriesList")
+          ).data;
+
+          break;
+
+        default:
+          break;
+      }
     },
   },
 
