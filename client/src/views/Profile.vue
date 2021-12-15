@@ -10,40 +10,19 @@
           name=""
           placeholder="Name"
           required
-          v-model="Name"
+          v-model="name"
         />
         <input
           class="user-input"
-          type="password"
+          type="text"
           placeholder="Email"
           required
           v-model="email"
         />
         <div class="options-01"></div>
-        <input class="btn" @click="login({ name, email })" />
+        <input class="btn" @click="update()" value="Update" />
       </form>
       <!--login form end-->
-      <!--signup form start-->
-      <form class="signup-form" action="" method="post">
-        <i class="fas fa-user-plus"></i>
-        <input
-          class="user-input"
-          type="text"
-          name=""
-          placeholder="Name"
-          required
-        />
-        <input
-          class="user-input"
-          type="email"
-          name=""
-          placeholder="Email Address"
-          required
-        />
-        <input class="btn" type="submit" name="" value="SIGN UP" />
-        <div class="options-02"></div>
-      </form>
-      <!--signup form end-->
 
       <br />
       <br />
@@ -54,7 +33,34 @@
 </template>
 
 <script>
-export default {};
+import { mapState, mapActions } from "vuex";
+import * as axios from "axios";
+export default {
+  data() {
+    return {
+      name: "",
+      email: "",
+    };
+  },
+  computed: {
+    ...mapState("account", ["user"]),
+  },
+  mounted() {
+    // this.name = this.user.name;
+    // this.email = this.user.email;
+  },
+  methods: {
+    ...mapActions("account", ["fetchUser"]),
+    async update() {
+      await axios.patch("http://localhost:3000/users", {
+        name: this.name,
+        email: this.email,
+      });
+
+      await this.fetchUser();
+    },
+  },
+};
 </script>
 
 <style>
